@@ -1,13 +1,9 @@
 package main
 
 import (
-	"os"
-
-	"fmt"
-
-	"log"
-
 	"flag"
+	"fmt"
+	"os"
 
 	"github.com/dghubble/go-twitter/twitter"
 	"github.com/joho/godotenv"
@@ -35,7 +31,7 @@ func main() {
 	}
 
 	params := &twitter.StreamFilterParams{
-		Track:         []string{"neymar"},
+		Track:         []string{flag.Arg(0)},
 		StallWarnings: twitter.Bool(true),
 	}
 
@@ -49,15 +45,14 @@ func main() {
 func loadEnvFile() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file, cannot track tweets...")
+		fmt.Errorf("error loading .env file, cannot track tweets...")
 	}
 }
 
-func trackTweets(client *Client, params *StreamFilterParams) {
-
+func trackTweets(client *twitter.Client, params *twitter.StreamFilterParams) {
 	stream, err := client.Streams.Filter(params)
 	if err != nil {
-		fmt.Errorf("Error with stream: %v", err)
+		fmt.Errorf("error with stream: %v", err)
 	}
 
 	for message := range stream.Messages {
