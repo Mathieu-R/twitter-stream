@@ -22,3 +22,11 @@ Then, you should set the following environment variables
 ```
 $ twitter-stream -track <keyword>
 ```
+
+#### Docker Image 
+```
+docker pull matiuso/twitter-stream
+```
+```
+docker run matiuso/twitter-stream -e CONSUMER_KEY=<key> -e CONSUMER_SECRET=<secret>
+```
