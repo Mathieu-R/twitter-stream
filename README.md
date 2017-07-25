@@ -6,7 +6,7 @@ Simple tweeter tracker
 
 #### Grab the project
 ```
-go get https://github.com/Mathieu-R/twitter-stream
+go get github.com/Mathieu-R/twitter-stream
 ```
 
 #### Credentials
