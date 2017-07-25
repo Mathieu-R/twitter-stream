@@ -31,7 +31,7 @@ func main() {
 	}
 
 	params := &twitter.StreamFilterParams{
-		Track:         []string{flag.Arg(0)},
+		Track:         []string{*track},
 		StallWarnings: twitter.Bool(true),
 	}
 
