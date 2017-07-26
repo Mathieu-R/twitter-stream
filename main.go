@@ -3,7 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/dghubble/go-twitter/twitter"
 	"github.com/joho/godotenv"
@@ -17,7 +20,7 @@ import (
 // on its own behalf or when the client is the resource owner
 
 var (
-	track = flag.String("track", "", "Tweets subject to track")
+	track = flag.String("track", "neymar", "Tweets subject to track")
 )
 
 func main() {
@@ -52,10 +55,22 @@ func loadEnvFile() {
 func trackTweets(client *twitter.Client, params *twitter.StreamFilterParams) {
 	stream, err := client.Streams.Filter(params)
 	if err != nil {
-		fmt.Errorf("error with stream: %v", err)
+		fmt.Printf("error with stream: %v", err)
+	}
+
+	demux := twitter.NewSwitchDemux()
+	demux.Tweet = func(tweet *twitter.Tweet) {
+		fmt.Println(tweet.Text)
 	}
 
 	for message := range stream.Messages {
-		fmt.Println(message)
+		demux.Handle(message)
 	}
+
+	// Wait for SIGINT and SIGTERM (HIT CTRL-C)
+	ch := make(chan os.Signal)
+	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
+	log.Println(<-ch)
+
+	stream.Stop()
 }
